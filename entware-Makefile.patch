@@ -1,0 +1,19 @@
+--- Makefile	2021-04-07 23:47:23.433106771 +0300
++++ Makefile_new	2021-04-08 00:00:48.426628277 +0300
+@@ -43,6 +43,7 @@
+   CATEGORY:=Base system
+   TITLE:=DNS and DHCP server
+   URL:=http://www.thekelleys.org.uk/dnsmasq/
++  DEPENDS+=+libpcre
+ endef
+ 
+ define Package/dnsmasq
+@@ -127,7 +128,7 @@
+ TARGET_CFLAGS += -flto
+ TARGET_LDFLAGS += -flto=jobserver
+ 
+-COPTS = -DHAVE_POLL_H \
++COPTS = -DHAVE_POLL_H -DHAVE_REGEX -DHAVE_REGEX_IPSET \
+ 	$(if $(CONFIG_IPV6),,-DNO_IPV6)
+ 
+ ifeq ($(BUILD_VARIANT),nodhcpv6)
