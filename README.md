@@ -6,7 +6,7 @@ Binary made with the instruction tested on Keenetic Giga KN-1010 with KeeneticOS
 
 
 #### Ready binary:
-[dnsmasq-2.84-regex-entware.tar.gz](/dnsmasq-2.84-regex-entware.tar.gz)
+[dnsmasq-2.84-regex-entware.tar.gz](https://github.com/thinkawitch/dnsmasq-regex-entware/releases/download/v2.84/dnsmasq-2.84-regex-entware.tar.gz)
 
 ### 1. Prepare build environment
 
