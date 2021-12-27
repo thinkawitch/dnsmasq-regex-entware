@@ -1,5 +1,7 @@
---- Makefile	2021-04-07 23:47:23.433106771 +0300
-+++ Makefile_new	2021-04-08 00:00:48.426628277 +0300
+Index: dnsmasq/Makefile
+===================================================================
+--- dnsmasq.orig/Makefile	2021-12-27 16:50:02.807894928 +0300
++++ dnsmasq/Makefile	2021-12-27 21:08:18.006310064 +0300
 @@ -43,6 +43,7 @@
    CATEGORY:=Base system
    TITLE:=DNS and DHCP server
@@ -8,7 +10,7 @@
  endef
  
  define Package/dnsmasq
-@@ -127,7 +128,7 @@
+@@ -128,7 +129,7 @@
  TARGET_CFLAGS += -flto
  TARGET_LDFLAGS += -flto=jobserver
  

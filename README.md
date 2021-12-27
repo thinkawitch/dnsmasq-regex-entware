@@ -2,11 +2,11 @@
 
 Original regex support patches got from https://github.com/lixingcong/dnsmasq-regex
 
-Binary made with the instruction tested on Keenetic Giga KN-1010 with KeeneticOS 3.6.3 and Entware (mipsel).
+Binary made with the instruction tested on Keenetic Giga KN-1010 with KeeneticOS 3.7.1 and Entware (mipsel).
 
 
 #### Ready binary:
-[dnsmasq-2.84-regex-entware.tar.gz](https://github.com/thinkawitch/dnsmasq-regex-entware/releases/download/v2.84/dnsmasq-2.84-regex-entware.tar.gz)
+[dnsmasq-2.86-regex-entware-3.7.1.tar.gz](https://github.com/thinkawitch/dnsmasq-regex-entware/releases/download/v2.86/dnsmasq-2.86-regex-entware-3.7.1.tar.gz)
 
 ### 1. Prepare build environment
 
@@ -93,7 +93,7 @@ cd ~/Entware
 make package/dnsmasq/compile
 ```
 
-Get ready binary from something like ~/Entware/build_dir/target-mipsel_mips32r2_glibc-2.27/dnsmasq-full/dnsmasq-2.84/ipkg-mipsel-3.4/dnsmasq-full/opt/sbin/dnsmasq
+Get ready binary from something like ~/Entware/build_dir/target-mipsel_mips32r2_glibc-2.27/dnsmasq-full/dnsmasq-2.86/ipkg-mipsel-3.4/dnsmasq-full/opt/sbin/dnsmasq
 
 ### 6. Place binary into keenetic router
 
@@ -110,7 +110,7 @@ cp /opt/root/dnsmasq /opt/sbin/dnsmasq
 
 # check version
 /opt/sbin/dnsmasq --version
-Dnsmasq version 2.84  Copyright (c) 2000-2021 Simon Kelley
+Dnsmasq version 2.86  Copyright (c) 2000-2021 Simon Kelley
 Compile time options: IPv6 GNU-getopt no-RTC no-DBus no-UBus no-i18n regex(+ipset) no-IDN DHCP DHCPv6 no-Lua TFTP conntrack ipset auth no-cryptohash no-DNSSEC no-ID loop-detect inotify dumpfile
 ```
 
@@ -129,6 +129,7 @@ Additional example https://github.com/lixingcong/dnsmasq-regex/blob/master/dnsma
 
 How to install Entware on Keenetic:
 - [Entware setup in russian](https://forum.keenetic.net/topic/4299-entware/)
+- [Entware setup on usb drive in english](https://help.keenetic.com/hc/en-us/articles/360021214160-Installing-the-Entware-repository-package-system-on-a-USB-drive)
 - [Another Entware setup example in english](https://help.keenetic.com/hc/en-us/articles/360000264829-Installation-and-configuration-of-the-rTorrent-OPKG-package)
 
 [Entware official packages mipsel k3.4](https://bin.entware.net/mipselsf-k3.4/Packages.html)
