@@ -98,6 +98,9 @@ Get ready binary from something like ~/Entware/build_dir/target-mipsel_mips32r2_
 ### 6. Place binary into keenetic router
 
 ```
+# install libpcre, if neccessary
+opkg install libpcre
+
 # upload file to router
 scp -P 222 ./dnsmasq root@keenetic-ip:/opt/root/dnsmasq
 
