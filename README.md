@@ -2,11 +2,11 @@
 
 Original regex support patches got from https://github.com/lixingcong/dnsmasq-regex
 
-Binary made with the instruction tested on Keenetic Giga KN-1010 with KeeneticOS 3.7.1 and Entware (mipsel).
+Binary made with the instruction tested on Keenetic Giga KN-1010 with KeeneticOS 4.2.6 and Entware (mipsel).
 
 
 #### Ready binary:
-[dnsmasq-2.86-regex-entware-3.7.1.tar.gz](https://github.com/thinkawitch/dnsmasq-regex-entware/releases/download/v2.86/dnsmasq-2.86-regex-entware-3.7.1.tar.gz)
+[dnsmasq-2.90-regex-entware-4.2.6.tar.gz](https://github.com/thinkawitch/dnsmasq-regex-entware/releases/download/v2.90/dnsmasq-2.90-regex-entware-4.2.6.tar.gz)
 
 ### 1. Prepare build environment
 
@@ -113,8 +113,8 @@ cp /opt/root/dnsmasq /opt/sbin/dnsmasq
 
 # check version
 /opt/sbin/dnsmasq --version
-Dnsmasq version 2.86  Copyright (c) 2000-2021 Simon Kelley
-Compile time options: IPv6 GNU-getopt no-RTC no-DBus no-UBus no-i18n regex(+ipset) no-IDN DHCP DHCPv6 no-Lua TFTP conntrack ipset auth no-cryptohash no-DNSSEC no-ID loop-detect inotify dumpfile
+Dnsmasq version 2.90  Copyright (c) 2000-2024 Simon Kelley
+Compile time options: IPv6 GNU-getopt no-RTC no-DBus no-UBus no-i18n regex(+ipset,nftset) no-IDN DHCP DHCPv6 no-Lua TFTP conntrack ipset no-nftset auth no-cryptohash no-DNSSEC no-ID loop-detect inotify dumpfile
 ```
 
 ### Regexp config sample

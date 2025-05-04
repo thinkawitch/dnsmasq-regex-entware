@@ -1,51 +1,63 @@
 diff --git a/Makefile b/Makefile
-index 2549e7c..d54f92b 100644
+index a9bcab9..463bc35 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -69,6 +69,8 @@ nettle_libs =   `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC     $(PKG_CO
+@@ -24,7 +24,11 @@ MANDIR        = $(PREFIX)/share/man
+ LOCALEDIR     = $(PREFIX)/share/locale
+ BUILDDIR      = $(SRC)
+ DESTDIR       = 
++ifndef BUILD_DEBUG
+ CFLAGS        = -Wall -W -O2
++else
++CFLAGS        = -Wall -W -g
++endif
+ LDFLAGS       = 
+ COPTS         = 
+ RPM_OPT_FLAGS = 
+@@ -70,6 +74,8 @@ nettle_libs =   `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC     $(PKG_CO
                                                          HAVE_CRYPTOHASH $(PKG_CONFIG) --libs nettle \
                                                          HAVE_NETTLEHASH $(PKG_CONFIG) --libs nettle`
  gmp_libs =      `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC NO_GMP --copy -lgmp`
 +regex_cflags =  `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_REGEX $(PKG_CONFIG) --cflags libpcre`
 +regex_libs =    `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_REGEX $(PKG_CONFIG) --libs libpcre`
  sunos_libs =    `if uname | grep SunOS >/dev/null 2>&1; then echo -lsocket -lnsl -lposix4; fi`
- version =     -DVERSION='\"`$(top)/bld/get-version $(top)`\"'
- 
-@@ -90,8 +92,8 @@ hdrs = dnsmasq.h config.h dhcp-protocol.h dhcp6-protocol.h \
+ nft_cflags =    `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_NFTSET $(PKG_CONFIG) --cflags libnftables` 
+ nft_libs =      `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_NFTSET $(PKG_CONFIG) --libs libnftables`
+@@ -93,8 +99,8 @@ hdrs = dnsmasq.h config.h dhcp-protocol.h dhcp6-protocol.h \
  all : $(BUILDDIR)
  	@cd $(BUILDDIR) && $(MAKE) \
   top="$(top)" \
-- build_cflags="$(version) $(dbus_cflags) $(idn2_cflags) $(idn_cflags) $(ct_cflags) $(lua_cflags) $(nettle_cflags)" \
-- build_libs="$(dbus_libs) $(idn2_libs) $(idn_libs) $(ct_libs) $(lua_libs) $(sunos_libs) $(nettle_libs) $(gmp_libs) $(ubus_libs)" \
-+ build_cflags="$(version) $(dbus_cflags) $(idn2_cflags) $(idn_cflags) $(ct_cflags) $(lua_cflags) $(nettle_cflags) $(regex_cflags)" \
-+ build_libs="$(dbus_libs) $(idn2_libs) $(idn_libs) $(ct_libs) $(lua_libs) $(sunos_libs) $(nettle_libs) $(gmp_libs) $(ubus_libs) $(regex_libs)" \
+- build_cflags="$(version) $(dbus_cflags) $(idn2_cflags) $(idn_cflags) $(ct_cflags) $(lua_cflags) $(nettle_cflags) $(nft_cflags)" \
+- build_libs="$(dbus_libs) $(idn2_libs) $(idn_libs) $(ct_libs) $(lua_libs) $(sunos_libs) $(nettle_libs) $(gmp_libs) $(ubus_libs) $(nft_libs)" \
++ build_cflags="$(version) $(dbus_cflags) $(idn2_cflags) $(idn_cflags) $(ct_cflags) $(lua_cflags) $(nettle_cflags) $(nft_cflags) $(regex_cflags)" \
++ build_libs="$(dbus_libs) $(idn2_libs) $(idn_libs) $(ct_libs) $(lua_libs) $(sunos_libs) $(nettle_libs) $(gmp_libs) $(ubus_libs) $(nft_libs) $(regex_libs)" \
   -f $(top)/Makefile dnsmasq 
  
  mostly_clean :
-@@ -115,8 +117,8 @@ all-i18n : $(BUILDDIR)
+@@ -118,8 +124,8 @@ all-i18n : $(BUILDDIR)
  	@cd $(BUILDDIR) && $(MAKE) \
   top="$(top)" \
   i18n=-DLOCALEDIR=\'\"$(LOCALEDIR)\"\' \
-- build_cflags="$(version) $(dbus_cflags) $(idn2_cflags) $(idn_cflags) $(ct_cflags) $(lua_cflags) $(nettle_cflags)" \
-- build_libs="$(dbus_libs) $(idn2_libs) $(idn_libs) $(ct_libs) $(lua_libs) $(sunos_libs) $(nettle_libs) $(gmp_libs) $(ubus_libs)"  \
-+ build_cflags="$(version) $(dbus_cflags) $(idn2_cflags) $(idn_cflags) $(ct_cflags) $(lua_cflags) $(nettle_cflags) $(regex_cflags)" \
-+ build_libs="$(dbus_libs) $(idn2_libs) $(idn_libs) $(ct_libs) $(lua_libs) $(sunos_libs) $(nettle_libs) $(gmp_libs) $(ubus_libs) $(regex_libs)"  \
+- build_cflags="$(version) $(dbus_cflags) $(idn2_cflags) $(idn_cflags) $(ct_cflags) $(lua_cflags) $(nettle_cflags) $(nft_cflags)" \
+- build_libs="$(dbus_libs) $(idn2_libs) $(idn_libs) $(ct_libs) $(lua_libs) $(sunos_libs) $(nettle_libs) $(gmp_libs) $(ubus_libs) $(nft_libs)"  \
++ build_cflags="$(version) $(dbus_cflags) $(idn2_cflags) $(idn_cflags) $(ct_cflags) $(lua_cflags) $(nettle_cflags) $(nft_cflags) $(regex_cflags)" \
++ build_libs="$(dbus_libs) $(idn2_libs) $(idn_libs) $(ct_libs) $(lua_libs) $(sunos_libs) $(nettle_libs) $(gmp_libs) $(ubus_libs) $(nft_libs) $(regex_libs)"  \
   -f $(top)/Makefile dnsmasq
  	for f in `cd $(PO); echo *.po`; do \
  		cd $(top) && cd $(BUILDDIR) && $(MAKE) top="$(top)" -f $(top)/Makefile $${f%.po}.mo; \
 diff --git a/src/config.h b/src/config.h
-index 30e23d8..c82a675 100644
+index e722e98..09e75a2 100644
 --- a/src/config.h
 +++ b/src/config.h
-@@ -192,6 +192,7 @@ RESOLVFILE
- /* #define HAVE_CONNTRACK */
+@@ -203,6 +203,7 @@ RESOLVFILE
  /* #define HAVE_CRYPTOHASH */
  /* #define HAVE_DNSSEC */
+ /* #define HAVE_NFTSET */
 +/* #define HAVE_REGEX */
  
- 
  /* Default locations for important system files. */
-@@ -382,6 +383,10 @@ static char *compile_opts =
+ 
+@@ -392,6 +393,10 @@ static char *compile_opts =
  "no-"
  #endif
  "i18n "
@@ -57,10 +69,10 @@ index 30e23d8..c82a675 100644
  "IDN2 "
  #else
 diff --git a/src/dnsmasq.h b/src/dnsmasq.h
-index 8674823..a02102e 100644
+index e455c3f..6d4274c 100644
 --- a/src/dnsmasq.h
 +++ b/src/dnsmasq.h
-@@ -154,6 +154,10 @@ extern int capget(cap_user_header_t header, cap_user_data_t data);
+@@ -155,6 +155,10 @@ extern int capget(cap_user_header_t header, cap_user_data_t data);
  #include <priv.h>
  #endif
  
@@ -71,7 +83,7 @@ index 8674823..a02102e 100644
  /* Backwards compat with 2.83 */
  #if defined(HAVE_NETTLEHASH)
  #  define HAVE_CRYPTOHASH
-@@ -571,6 +575,10 @@ struct randfd_list {
+@@ -590,6 +594,10 @@ struct randfd_list {
  struct server {
    u16 flags, domain_len;
    char *domain;
@@ -82,7 +94,7 @@ index 8674823..a02102e 100644
    struct server *next;
    int serial, arrayposn;
    int last_server;
-@@ -592,6 +600,10 @@ struct server {
+@@ -612,6 +620,10 @@ struct server {
  struct serv_addr4 {
    u16 flags, domain_len;
    char *domain;
@@ -93,7 +105,7 @@ index 8674823..a02102e 100644
    struct server *next;
    struct in_addr addr;
  };
-@@ -599,6 +611,10 @@ struct serv_addr4 {
+@@ -619,6 +631,10 @@ struct serv_addr4 {
  struct serv_addr6 {
    u16 flags, domain_len;
    char *domain;
@@ -104,7 +116,7 @@ index 8674823..a02102e 100644
    struct server *next;
    struct in6_addr addr;
  };
-@@ -606,6 +622,10 @@ struct serv_addr6 {
+@@ -626,6 +642,10 @@ struct serv_addr6 {
  struct serv_local {
    u16 flags, domain_len;
    char *domain;
@@ -115,17 +127,17 @@ index 8674823..a02102e 100644
    struct server *next;
  };
  
-@@ -1108,6 +1128,9 @@ extern struct daemon {
-   struct server *servers, *local_domains, **serverarray, *no_rebind;
+@@ -1178,6 +1198,9 @@ extern struct daemon {
+   struct rebind_domain *no_rebind;
    int server_has_wildcard;
    int serverarraysz, serverarrayhwm;
 +#ifdef HAVE_REGEX
 +  int regexserverarraysz, regexlocaldomainarraysz;
 +#endif
-   struct ipsets *ipsets;
+   struct ipsets *ipsets, *nftsets;
    u32 allowlist_mask;
    struct allowlist *allowlists;
-@@ -1757,6 +1780,12 @@ void dump_packet(int mask, void *packet, size_t len, union mysockaddr *src, unio
+@@ -1884,6 +1907,12 @@ void dump_packet_icmp(int mask, void *packet, size_t len, union mysockaddr *src,
  #endif
  
  /* domain-match.c */
@@ -139,10 +151,10 @@ index 8674823..a02102e 100644
  int lookup_domain(char *qdomain, int flags, int *lowout, int *highout);
  int filter_servers(int seed, int flags, int *lowout, int *highout);
 diff --git a/src/domain-match.c b/src/domain-match.c
-index f8e4796..3ee23b3 100644
+index cf2da77..9876014 100644
 --- a/src/domain-match.c
 +++ b/src/domain-match.c
-@@ -27,47 +27,88 @@ void build_server_array(void)
+@@ -27,47 +27,90 @@ void build_server_array(void)
  {
    struct server *serv;
    int count = 0;
@@ -156,9 +168,9 @@ index f8e4796..3ee23b3 100644
 -  for (serv = daemon->servers; serv; serv = serv->next)
 +  for (serv = daemon->servers; serv; serv = serv->next){
  #ifdef HAVE_LOOP
--    if (!(serv->flags & SERV_LOOP))
-+    if (!(serv->flags & SERV_LOOP)){
+     if (!(serv->flags & SERV_LOOP))
 +#endif
++    {
 +#ifdef HAVE_REGEX
 +    if(serv->regex)
 +      ++regexserverarraysz;
@@ -225,9 +237,9 @@ index f8e4796..3ee23b3 100644
 -  for (serv = daemon->servers; serv; serv = serv->next)
 +  for (serv = daemon->servers; serv; serv = serv->next){
  #ifdef HAVE_LOOP
--    if (!(serv->flags & SERV_LOOP))
-+    if (!(serv->flags & SERV_LOOP)){
+     if (!(serv->flags & SERV_LOOP))
 +#endif
++    {
 +#ifdef HAVE_REGEX
 +    if(serv->regex){
 +      daemon->serverarray[regexserverarrayidx++]=serv;
@@ -236,7 +248,7 @@ index f8e4796..3ee23b3 100644
  #endif
        {
  	daemon->serverarray[count] = serv;
-@@ -75,9 +116,18 @@ void build_server_array(void)
+@@ -75,9 +118,18 @@ void build_server_array(void)
  	serv->last_server = -1;
  	count++;
        }
@@ -258,7 +270,7 @@ index f8e4796..3ee23b3 100644
    
    qsort(daemon->serverarray, daemon->serverarraysz, sizeof(struct server *), order_qsort);
    
-@@ -86,6 +136,11 @@ void build_server_array(void)
+@@ -86,6 +138,20 @@ void build_server_array(void)
    for (count = 0; count < daemon->serverarraysz; count++)
      if (!(daemon->serverarray[count]->flags & SERV_IS_LOCAL))
        daemon->serverarray[count]->arrayposn = count;
@@ -267,10 +279,19 @@ index f8e4796..3ee23b3 100644
 +  for (count = daemon->serverarrayhwm; count < daemon->serverarrayhwm + daemon->regexserverarraysz; ++count)
 +    daemon->serverarray[count]->arrayposn = count;
 +#endif
++
++#if 0 // print the whole array, for debug only
++  for(count=0; count < daemon->serverarrayhwm + daemon->regexserverarraysz + daemon->regexlocaldomainarraysz; ++count){
++    struct server* sv= daemon->serverarray[count];
++    if(sv)
++      printf("i = %d, flag=%u, p=%p, nextP=%p, domain = %s, sfd=%p\n",
++              count,  sv->flags,  sv,      sv->next,    sv->domain,   sv->sfd);
++  }
++#endif
  }
  
  /* we're looking for the server whose domain is the longest exact match
-@@ -103,6 +158,11 @@ void build_server_array(void)
+@@ -103,6 +169,11 @@ void build_server_array(void)
  */
  int lookup_domain(char *domain, int flags, int *lowout, int *highout)
  {
@@ -282,7 +303,7 @@ index f8e4796..3ee23b3 100644
    int rc, crop_query, nodots;
    ssize_t qlen;
    int try, high, low = 0;
-@@ -111,7 +171,7 @@ int lookup_domain(char *domain, int flags, int *lowout, int *highout)
+@@ -111,7 +182,7 @@ int lookup_domain(char *domain, int flags, int *lowout, int *highout)
  
    /* may be no configured servers. */
    if (daemon->serverarraysz == 0)
@@ -291,14 +312,15 @@ index f8e4796..3ee23b3 100644
    
    /* find query length and presence of '.' */
    for (cp = qdomain, nodots = 1, qlen = 0; *cp; qlen++, cp++)
-@@ -250,9 +310,27 @@ int lookup_domain(char *domain, int flags, int *lowout, int *highout)
-     *highout = nhigh;
+@@ -255,9 +326,42 @@ int lookup_domain(char *domain, int flags, int *lowout, int *highout)
  
-   if (nlow == nhigh)
+   /* qlen == -1 when we failed to match even an empty query, if there are no default servers. */
+   if (nlow == nhigh || qlen == -1)
 -    return 0;
-+    goto search_regex;
- 
+-  
 -  return 1;
++    goto search_regex;
++
 +  founddomain = 1;
 +
 +search_regex:
@@ -308,20 +330,35 @@ index f8e4796..3ee23b3 100644
 +      needsearchregex = 0;
 +  }
 +
-+  if (needsearchregex && find_regex_server(originaldomain, 0, &low)){
-+    if (lowout)
-+      *lowout = low;
-+    if (highout)
-+      *highout = low + 1;
++  if (needsearchregex){
++    int found_regex = find_regex_server(originaldomain, 0, &low);
 +
-+    founddomain = 1;
++    if(!found_regex && find_regex_server(originaldomain, 1, &low)){
++      found_regex=1;
++
++      // special step for parse "server=/:xxx:/#"
++      if(daemon->serverarray[low]->flags & SERV_USE_RESOLV){
++        if(filter_servers(try, F_SERVER, &nlow, &nhigh)){
++          low=nlow;
++        }
++      }
++    }
++
++    if(found_regex){
++      if (lowout)
++        *lowout = low;
++      if (highout)
++        *highout = low + 1;
++
++      founddomain = 1;
++    }
 +  }
 +#endif
 +  return founddomain;
  }
  
  /* Return first server in group of equivalent servers; this is the "master" record. */
-@@ -265,6 +343,14 @@ int filter_servers(int seed, int flags, int *lowout, int *highout)
+@@ -270,6 +374,14 @@ int filter_servers(int seed, int flags, int *lowout, int *highout)
  {
    int nlow = seed, nhigh = seed;
    int i;
@@ -336,21 +373,31 @@ index f8e4796..3ee23b3 100644
    
    /* expand nlow and nhigh to cover all the records with the same domain 
       nlow is the first, nhigh - 1 is the last. nlow=nhigh means no servers,
-@@ -353,6 +439,79 @@ int filter_servers(int seed, int flags, int *lowout, int *highout)
+@@ -366,6 +478,89 @@ int filter_servers(int seed, int flags, int *lowout, int *highout)
    return (nlow != nhigh);
  }
  
 +#ifdef HAVE_REGEX
 +// return flags, or 0 if not found
++// if argument domain is NULL, check the 'first' server is local answer, make sure 'first' is valid
 +int is_local_regex_answer(const char *domain, int *first, int *last)
 +{
 +  int flags = 0;
 +  int rc = 0;
 +  int arraypos = 0;
-+  if(find_regex_server(domain, 1, &arraypos)){
++  int found = 1;
++
++  if(domain){
++    found = find_regex_server(domain, 1, &arraypos);
++    if(found){
++      *first = arraypos;
++      *last = *first + 1;
++    }
++  }else
++    arraypos = *first;
++
++  if(found){
 +    struct server *r = daemon->serverarray[arraypos];
-+    *first = arraypos;
-+    *last = *first + 1;
 +
 +    flags = r->flags;
 +    if (flags & SERV_4ADDR)
@@ -416,7 +463,17 @@ index f8e4796..3ee23b3 100644
  int is_local_answer(time_t now, int first, char *name)
  {
    int flags = 0;
-@@ -591,6 +750,9 @@ int add_update_server(int flags,
+@@ -505,6 +700,9 @@ static int order(char *qdomain, size_t qlen, struct server *serv)
+ static int order_servers(struct server *s1, struct server *s2)
+ {
+   int rc;
++#ifdef HAVE_REGEX
++  if(!s1) return -1;
++#endif
+ 
+   /* need full comparison of dotless servers in 
+      order_qsort() and filter_servers() */
+@@ -626,6 +824,9 @@ int add_update_server(int flags,
  		      const char *domain,
  		      union all_addr *local_addr)
  {
@@ -426,7 +483,7 @@ index f8e4796..3ee23b3 100644
    struct server *serv = NULL;
    char *alloc_domain;
    
-@@ -606,7 +768,18 @@ int add_update_server(int flags,
+@@ -641,10 +842,32 @@ int add_update_server(int flags,
        if (*domain != 0)
  	flags |= SERV_WILDCARD;
      }
@@ -436,20 +493,35 @@ index f8e4796..3ee23b3 100644
 +    size_t domainLen=strlen(domain);
 +    char* regex_end=(char*)domain+domainLen-1;
 +    if (domainLen > 2 && *domain == ':' && *regex_end == ':'){
++      const char* err = NULL;
++
 +      ++domain; // skip leading ':'
++      --domainLen; // skip leading ':'
++
 +      *regex_end = '\0'; // skip tailing ':'
 +      regex = domain;
++
++      // call whine_malloc() instead of canonicalise()
++      if ((alloc_domain = whine_malloc(domainLen)))
++        memcpy(alloc_domain, domain, domainLen);
 +    }
 +  }
 +#endif
 +
    if (*domain == 0)
      alloc_domain = whine_malloc(1);
-   else if (!(alloc_domain = canonicalise((char *)domain, NULL)))
-@@ -693,6 +866,16 @@ int add_update_server(int flags,
- 	serv->source_addr = *source_addr;
-     }
+   else
++#ifdef HAVE_REGEX
++  if(!regex)
++#endif
+     alloc_domain = canonicalise((char *)domain, NULL);
  
+   if (!alloc_domain)
+@@ -744,6 +967,16 @@ int add_update_server(int flags,
+   serv->flags = flags;
+   serv->domain = alloc_domain;
+   serv->domain_len = strlen(alloc_domain);
++
 +#ifdef HAVE_REGEX
 +  if (regex){
 +    const char* err = NULL;
@@ -459,27 +531,26 @@ index f8e4796..3ee23b3 100644
 +    }
 +  }
 +#endif
-+
+   
    return 1;
  }
- 
 diff --git a/src/forward.c b/src/forward.c
-index 3d638e4..9f669a3 100644
+index 10e7496..e427748 100644
 --- a/src/forward.c
 +++ b/src/forward.c
-@@ -275,6 +275,11 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
+@@ -306,6 +306,11 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
        /* Configured answer. */
        if (flags || ede == EDE_NOT_READY)
  	goto reply;
 +
 +#ifdef HAVE_REGEX
-+	if ((flags = is_local_regex_answer(daemon->namebuff, &first, &last)))
++	if ((flags = is_local_regex_answer(NULL, &first, &last)))
 +		goto reply;
 +#endif
        
        master = daemon->serverarray[first];
        
-@@ -320,6 +325,9 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
+@@ -360,6 +365,9 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
  	      forward->forwardall = 1;
  	    }
  	  else
@@ -489,25 +560,23 @@ index 3d638e4..9f669a3 100644
  	    start = master->last_server;
  	}
      }
-@@ -357,10 +365,15 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
- 	{
- 	  /* retry on existing query, from original source. Send to all available servers  */
- 	  forward->sentto->failed_queries++;
+@@ -402,7 +410,14 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
+ 	    forward->sentto->failed_queries++;
+ 	  else
+ 	    forward->sentto->retrys++;
 -	  
++
 +#ifdef HAVE_REGEX
-+		if(forward->sentto->regex){
-+			start = first = forward->sentto->arrayposn;
-+			last = first + 1;
-+			forward->forwardall = 0;
-+		}else
++	  if(forward->sentto->regex){
++	    start = first = forward->sentto->arrayposn;
++	    last = first + 1;
++	    forward->forwardall = 0;
++	  }else
++#endif
  	  if (!filter_servers(forward->sentto->arrayposn, F_SERVER, &first, &last))
  	    goto reply;
--	  
-+#endif
- 	  master = daemon->serverarray[first];
  	  
- 	  /* Forward to all available servers on retry of query from same host. */
-@@ -446,8 +459,13 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
+@@ -494,8 +509,13 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
    while (1)
      { 
        int fd;
@@ -523,16 +592,16 @@ index 3d638e4..9f669a3 100644
        if ((fd = allocate_rfd(&forward->rfds, srv)) != -1)
  	{
  	  
-@@ -2034,9 +2052,17 @@ unsigned char *tcp_request(int confd, time_t now,
- 	      struct server *master;
- 	      int start;
- 
+@@ -2360,9 +2380,17 @@ unsigned char *tcp_request(int confd, time_t now,
+ 	      blockdata_retrieve(saved_question, (size_t)saved_size, header);
+ 	      size = saved_size;
+ 	      
 -	      if (lookup_domain(daemon->namebuff, gotname, &first, &last))
 +	      if (lookup_domain(daemon->namebuff, gotname, &first, &last)){
  		flags = is_local_answer(now, first, daemon->namebuff);
 +#ifdef HAVE_REGEX
 +		if(!flags)
-+			flags = is_local_regex_answer(daemon->namebuff, &first, &last);
++			flags = is_local_regex_answer(NULL, &first, &last);
 +#endif
 +		  }
  	      else
@@ -542,7 +611,7 @@ index 3d638e4..9f669a3 100644
  		{
  		  /* No configured servers */
  		  ede = EDE_NOT_READY;
-@@ -2055,7 +2081,11 @@ unsigned char *tcp_request(int confd, time_t now,
+@@ -2381,7 +2409,11 @@ unsigned char *tcp_request(int confd, time_t now,
  		{
  		  master = daemon->serverarray[first];
  		  
@@ -555,10 +624,10 @@ index 3d638e4..9f669a3 100644
  		  else
  		    start = master->last_server;
 diff --git a/src/network.c b/src/network.c
-index 3fc179d..460ca41 100644
+index b061833..ec779ee 100644
 --- a/src/network.c
 +++ b/src/network.c
-@@ -1601,6 +1601,10 @@ void check_servers(int no_loop_check)
+@@ -1671,6 +1671,10 @@ void check_servers(int no_loop_check)
  	    s1 = _("unqualified"), s2 = _("names");
  	  else if (strlen(serv->domain) == 0)
  	    s1 = _("default"), s2 = "";
@@ -569,3 +638,19 @@ index 3fc179d..460ca41 100644
  	  else
  	    s1 = _("domain"), s2 = serv->domain, s4 = (serv->flags & SERV_WILDCARD) ? "*" : "";
  	  
+@@ -1700,8 +1704,14 @@ void check_servers(int no_loop_check)
+ 	   if (++locals <= LOCALS_LOGGED)
+ 	     my_syslog(LOG_INFO, _("using only locally-known addresses for %s"), serv->domain);
+ 	 }
+-       else if (serv->flags & SERV_USE_RESOLV)
++       else if (serv->flags & SERV_USE_RESOLV){
++#ifdef HAVE_REGEX
++    if (serv->regex)
++      my_syslog(LOG_INFO, _("using standard nameservers for regex domain %s"), serv->domain);
++    else
++#endif
+ 	 my_syslog(LOG_INFO, _("using standard nameservers for %s"), serv->domain);
++       }
+     }
+   
+   if (locals > LOCALS_LOGGED)

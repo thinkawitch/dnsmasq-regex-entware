@@ -1,21 +1,18 @@
-Index: dnsmasq/Makefile
-===================================================================
---- dnsmasq.orig/Makefile	2021-12-27 16:50:02.807894928 +0300
-+++ dnsmasq/Makefile	2021-12-27 21:08:18.006310064 +0300
-@@ -43,6 +43,7 @@
-   CATEGORY:=Base system
+--- Makefile	2025-05-04 12:40:49.581255000 +0300
++++ Makefile_andrew	2025-05-04 19:16:42.320899054 +0300
+@@ -45,6 +45,7 @@
    TITLE:=DNS and DHCP server
    URL:=http://www.thekelleys.org.uk/dnsmasq/
+   USERID:=dnsmasq=453:dnsmasq=453
 +  DEPENDS+=+libpcre
  endef
- 
+
  define Package/dnsmasq
-@@ -128,7 +129,7 @@
- TARGET_CFLAGS += -flto
- TARGET_LDFLAGS += -flto=jobserver
- 
--COPTS = -DHAVE_POLL_H \
-+COPTS = -DHAVE_POLL_H -DHAVE_REGEX -DHAVE_REGEX_IPSET \
- 	$(if $(CONFIG_IPV6),,-DNO_IPV6)
- 
- ifeq ($(BUILD_VARIANT),nodhcpv6)
+@@ -149,6 +150,7 @@
+ 		$(if $(CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_broken_rtc),-DHAVE_BROKEN_RTC) \
+ 		$(if $(CONFIG_PACKAGE_dnsmasq_$(BUILD_VARIANT)_tftp),,-DNO_TFTP)
+ 	COPTS += $(if $(CONFIG_LIBNETTLE_MINI),-DNO_GMP,)
++	COPTS += -DHAVE_REGEX -DHAVE_REGEX_IPSET
+ else
+ 	COPTS += -DNO_AUTH -DNO_IPSET -DNO_ID
+ endif
